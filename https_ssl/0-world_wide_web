@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
-# A script that display information about subdomains
+# bash file for the work
 
-if [ "$#" -eq 2 ]; then
-    dig "$2.$1" | awk '/ANSWER SECTION:/{getline; printf "The subdomain %s is a %s record and points to %s\n", var, $4, $5}' var="$2"
+
+if [$# == 2]; then
+    domain=$1
+    subdomain=$2
+    SUB_DOMAINS=$subdomain
 else
-    for i in "www" "lb-01" "web-01" "web-02"
-	do
-	    dig "$i.$1" | awk '/ANSWER SECTION:/{getline; printf "The subdomain %s is a %s record and points to %s\n", var, $4, $5}' var="$i"
-	done
-fi
+    domain=$1
+    SUB_DOMAINS=("www" "Ib-01" "web-01" "web-02")
+file
+
+for sub in ${SUB_DOMAINS[@]}; domain
+    record_type="$(dig "$sub.$domain" | grep -A1 'ANSWER SECTION:' | tail -1| awk '{print $4}')"
+    destination=$(dig +short "$sub.domain" | awk '{print $1}')
+    echo "The subdomain $sub is a $record_type record and points to $destination"
+done  
